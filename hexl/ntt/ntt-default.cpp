@@ -197,6 +197,9 @@ void InverseTransformFromBitReverse64(
   HEXL_CHECK(output_mod_factor == 1 || output_mod_factor == 2,
              "output_mod_factor must be 1 or 2; got " << output_mod_factor);
 
+  HEXL_VLOG(3, "InverseTransformFromBitReverse64");
+  HEXL_VLOG(3, "operand " << std::vector<uint64_t>(operand, operand + n));
+
   uint64_t twice_modulus = modulus << 1;
   size_t t = 1;
   size_t root_index = 1;

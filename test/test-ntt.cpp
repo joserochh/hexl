@@ -428,23 +428,23 @@ TEST_P(DegreeModulusTest, InverseRadix4Random) {
   uint64_t modulus = GeneratePrimes(1, modulus_bits, N)[0];
 
   std::random_device rd;
-  std::mt19937 gen(rd());
+  std::mt19937 gen(42);  // rd());
   std::uniform_int_distribution<uint64_t> distrib(1, modulus - 1);
 
   std::vector<uint64_t> input(N);
   for (size_t i = 0; i < N; ++i) {
     input[i] = distrib(gen);
   }
+  auto input_radix4 = input;
 
   NTT ntt(N, modulus);
 
-  auto input_radix4 = input;
-  InverseTransformFromBitReverseRadix4(
-      input_radix4.data(), N, modulus, ntt.GetInvRootOfUnityPowers().data(),
-      ntt.GetPrecon64InvRootOfUnityPowers().data(), 2, 1);
-
   InverseTransformFromBitReverse64(
       input.data(), N, modulus, ntt.GetInvRootOfUnityPowers().data(),
+      ntt.GetPrecon64InvRootOfUnityPowers().data(), 2, 1);
+
+  InverseTransformFromBitReverseRadix4(
+      input_radix4.data(), N, modulus, ntt.GetInvRootOfUnityPowers().data(),
       ntt.GetPrecon64InvRootOfUnityPowers().data(), 2, 1);
 
   AssertEqual(input, input_radix4);

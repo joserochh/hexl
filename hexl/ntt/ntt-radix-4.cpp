@@ -274,31 +274,35 @@ void InverseTransformFromBitReverseRadix4(
 
   uint64_t twice_modulus = modulus << 1;
   uint64_t four_times_modulus = modulus << 2;
+  size_t final_root_index = 1;
 
   // Radix-2 step for powers of 4
-  // if (is_power_of_4) {
-  //   HEXL_VLOG(3, "Radix 2 step");
+  if (is_power_of_4) {
+    HEXL_VLOG(3, "Radix 2 step");
 
-  //   size_t t = (n >> 1);
+    size_t root_index = 1;
 
-  //   const uint64_t W = inv_root_of_unity_powers[1];
-  //   const uint64_t W_precon = precon_inv_root_of_unity_powers[1];
+    uint64_t* X = operand;
+    uint64_t* Y = X + 1;
+    HEXL_LOOP_UNROLL_8
+    for (size_t j = 0; j < (n >> 1); j++) {
+      const uint64_t W = inv_root_of_unity_powers[root_index];
+      const uint64_t W_precon = precon_inv_root_of_unity_powers[root_index];
+      InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
+      X++;
+      Y++;
 
-  //   uint64_t* X = operand;
-  //   uint64_t* Y = X + t;
-  //   HEXL_LOOP_UNROLL_8
-  //   for (size_t j = 0; j < t; j++) {
-  //     FwdButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
-  //   }
-  //   // Data in [0, 4q)
-  // }
+      root_index++;
+      final_root_index++;
+    }
+    // Data in [0, 4q)
+  }
 
   uint64_t m_start = n >> (is_power_of_4 ? 2 : 1);
   size_t t = is_power_of_4 ? 2 : 1;
 
   size_t w1_root_index = 1;
   size_t w3_root_index = m_start + 1;
-  size_t final_root_index = 1;
 
   for (size_t m = m_start; m > 1; m >>= 2) {
     HEXL_VLOG(4, "m " << m);
