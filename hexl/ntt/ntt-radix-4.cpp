@@ -275,8 +275,8 @@ void InverseTransformFromBitReverseRadix4(
   uint64_t twice_modulus = modulus << 1;
   uint64_t four_times_modulus = modulus << 2;
 
-  // Radix-2 step for non-powers of 4
-  // if (!is_power_of_4) {
+  // Radix-2 step for powers of 4
+  // if (is_power_of_4) {
   //   HEXL_VLOG(3, "Radix 2 step");
 
   //   size_t t = (n >> 1);
@@ -293,35 +293,74 @@ void InverseTransformFromBitReverseRadix4(
   //   // Data in [0, 4q)
   // }
 
-  size_t t = 1;
-  size_t root_index = 1;
+  uint64_t m_start = n >> (is_power_of_4 ? 2 : 1);
+  size_t t = is_power_of_4 ? 2 : 1;
 
-  for (size_t m = (n >> 1); m > 1; m >>= 1) {
+  size_t w1_root_index = 1;
+  size_t w3_root_index = m_start + 1;
+  size_t final_root_index = 1;
+
+  for (size_t m = m_start; m > 1; m >>= 2) {
+    HEXL_VLOG(4, "m " << m);
     size_t j1 = 0;
+
+    HEXL_VLOG(4, "t " << t);
+
+    size_t X0_offset = 0;
 
     switch (t) {
       default: {
-        for (size_t i = 0; i < m; i++, root_index++) {
+        for (size_t i = 0; i < m / 2; i++, final_root_index++) {
+          HEXL_VLOG(4, "i " << i);
           if (i != 0) {
-            j1 += (t << 1);
+            X0_offset += 4 * t;
           }
-          const uint64_t W = inv_root_of_unity_powers[root_index];
-          const uint64_t W_precon = precon_inv_root_of_unity_powers[root_index];
 
-          uint64_t* X = operand + j1;
-          uint64_t* Y = X + t;
+          uint64_t* X0 = operand + X0_offset;
+          uint64_t* X1 = X0 + t;
+          uint64_t* X2 = X0 + 2 * t;
+          uint64_t* X3 = X0 + 3 * t;
+
+          uint64_t W1_ind = w1_root_index;      // m + i;
+          uint64_t W2_ind = w1_root_index + 1;  // 2 * W1_ind;
+          uint64_t W3_ind = w3_root_index;      // 2 * W1_ind + 1;
+
+          w3_root_index++;
+          w1_root_index += 2;
+
+          HEXL_VLOG(4, "W1_ind " << W1_ind);
+          HEXL_VLOG(4, "W2_ind " << W2_ind);
+          HEXL_VLOG(4, "W3_ind " << W3_ind);
+
+          const uint64_t W1 = inv_root_of_unity_powers[W1_ind];
+          const uint64_t W2 = inv_root_of_unity_powers[W2_ind];
+          const uint64_t W3 = inv_root_of_unity_powers[W3_ind];
+
+          const uint64_t W1_precon = precon_inv_root_of_unity_powers[W1_ind];
+          const uint64_t W2_precon = precon_inv_root_of_unity_powers[W2_ind];
+          const uint64_t W3_precon = precon_inv_root_of_unity_powers[W3_ind];
+
+          // const uint64_t W = inv_root_of_unity_powers[root_index];
+          // const uint64_t W_precon =
+          // precon_inv_root_of_unity_powers[root_index]; uint64_t* X = operand
+          // + j1; uint64_t* Y = X + t;
+
           HEXL_LOOP_UNROLL_8
           for (size_t j = 0; j < t; j++) {
-            InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
+            HEXL_VLOG(4, "j " << j);
+            InvButterflyRadix4(X0, X1, X2, X3, W1, W1_precon, W2, W2_precon, W3,
+                               W3_precon, modulus, twice_modulus);
           }
         }
       }
     }
-    t <<= 1;
+    t <<= 2;
   }
 
+  HEXL_VLOG(4, "Starting final invNTT butterfly");
+
   // Fold multiplication by N^{-1} to final stage butterfly
-  const uint64_t W = inv_root_of_unity_powers[root_index];
+  const uint64_t W = inv_root_of_unity_powers[final_root_index];
   const uint64_t inv_n = InverseMod(n, modulus);
   uint64_t inv_n_precon = MultiplyFactor(inv_n, 64, modulus).BarrettFactor();
   const uint64_t inv_n_w = MultiplyMod(inv_n, W, modulus);
