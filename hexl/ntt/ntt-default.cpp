@@ -138,7 +138,12 @@ void ForwardTransformToBitReverseRadix2(
   }
   if (output_mod_factor == 1) {
     for (size_t i = 0; i < n; ++i) {
-      operand[i] = ReduceMod<4>(operand[i], modulus, &twice_modulus);
+      if (operand[i] >= twice_modulus) {
+        operand[i] -= twice_modulus;
+      }
+      if (operand[i] >= modulus) {
+        operand[i] -= modulus;
+      }
       HEXL_CHECK(operand[i] < modulus, "Incorrect modulus reduction in NTT "
                                            << operand[i] << " >= " << modulus);
     }
@@ -196,29 +201,70 @@ void InverseTransformFromBitReverse64(
   size_t t = 1;
   size_t root_index = 1;
 
-  HEXL_VLOG(
-      3, "InverseTransformFromBitReverse64 n " << n << " modulus " << modulus);
-  HEXL_VLOG(3, "inputs " << std::vector<uint64_t>(operand, operand + n));
-
   for (size_t m = (n >> 1); m > 1; m >>= 1) {
     size_t j1 = 0;
 
-    HEXL_VLOG(3, "m " << m);
-    HEXL_VLOG(3, "t " << t);
+    switch (t) {
+      case 1: {
+        for (size_t i = 0; i < m; i++, root_index++) {
+          if (i != 0) {
+            j1 += (t << 1);
+          }
+          const uint64_t W = inv_root_of_unity_powers[root_index];
+          const uint64_t W_precon = precon_inv_root_of_unity_powers[root_index];
 
-    switch (t)
-    default: {
-      for (size_t i = 0; i < m; i++, root_index++) {
-        if (i != 0) {
-          j1 += (t << 1);
+          uint64_t* X = operand + j1;
+          uint64_t* Y = X + t;
+
+          InvButterfly(X, Y, W, W_precon, modulus, twice_modulus);
         }
-        const uint64_t W = inv_root_of_unity_powers[root_index];
-        const uint64_t W_precon = precon_inv_root_of_unity_powers[root_index];
+        break;
+      }
+      case 2: {
+        for (size_t i = 0; i < m; i++, root_index++) {
+          if (i != 0) {
+            j1 += (t << 1);
+          }
+          const uint64_t W = inv_root_of_unity_powers[root_index];
+          const uint64_t W_precon = precon_inv_root_of_unity_powers[root_index];
 
-        uint64_t* X = operand + j1;
-        uint64_t* Y = X + t;
-        HEXL_LOOP_UNROLL_8
-        for (size_t j = 0; j < t; j += 8) {
+          uint64_t* X = operand + j1;
+          uint64_t* Y = X + t;
+
+          InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
+          InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
+        }
+        break;
+      }
+      case 4: {
+        for (size_t i = 0; i < m; i++, root_index++) {
+          if (i != 0) {
+            j1 += (t << 1);
+          }
+          const uint64_t W = inv_root_of_unity_powers[root_index];
+          const uint64_t W_precon = precon_inv_root_of_unity_powers[root_index];
+
+          uint64_t* X = operand + j1;
+          uint64_t* Y = X + t;
+
+          InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
+          InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
+          InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
+          InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
+        }
+        break;
+      }
+      case 8: {
+        for (size_t i = 0; i < m; i++, root_index++) {
+          if (i != 0) {
+            j1 += (t << 1);
+          }
+          const uint64_t W = inv_root_of_unity_powers[root_index];
+          const uint64_t W_precon = precon_inv_root_of_unity_powers[root_index];
+
+          uint64_t* X = operand + j1;
+          uint64_t* Y = X + t;
+
           InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
           InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
           InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
@@ -227,10 +273,34 @@ void InverseTransformFromBitReverse64(
           InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
           InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
           InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
+        }
+        break;
+      }
+      default: {
+        for (size_t i = 0; i < m; i++, root_index++) {
+          if (i != 0) {
+            j1 += (t << 1);
+          }
+          const uint64_t W = inv_root_of_unity_powers[root_index];
+          const uint64_t W_precon = precon_inv_root_of_unity_powers[root_index];
+
+          uint64_t* X = operand + j1;
+          uint64_t* Y = X + t;
+          HEXL_LOOP_UNROLL_8
+          for (size_t j = 0; j < t; j += 8) {
+            InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
+            InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
+            InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
+            InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
+            InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
+            InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
+            InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
+            InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
+          }
         }
       }
     }
-      t <<= 1;
+    t <<= 1;
   }
 
   // Fold multiplication by N^{-1} to final stage butterfly
@@ -247,7 +317,10 @@ void InverseTransformFromBitReverse64(
     // Assume X, Y in [0, 2q) and compute
     // X' = N^{-1} (X + Y) (mod q)
     // Y' = N^{-1} * W * (X - Y) (mod q)
-    uint64_t tx = AddUIntMod(X[j], Y[j], twice_modulus);
+    uint64_t tx = X[j] + Y[j];
+    if (tx >= twice_modulus) {
+      tx -= twice_modulus;
+    }
     uint64_t ty = X[j] + twice_modulus - Y[j];
     X[j] = MultiplyModLazy<64>(tx, inv_n, inv_n_precon, modulus);
     Y[j] = MultiplyModLazy<64>(ty, inv_n_w, inv_n_w_precon, modulus);
@@ -256,7 +329,9 @@ void InverseTransformFromBitReverse64(
   if (output_mod_factor == 1) {
     // Reduce from [0, 2q) to [0,q)
     for (size_t i = 0; i < n; ++i) {
-      operand[i] = ReduceMod<2>(operand[i], modulus);
+      if (operand[i] >= modulus) {
+        operand[i] -= modulus;
+      }
       HEXL_CHECK(operand[i] < modulus, "Incorrect modulus reduction in InvNTT"
                                            << operand[i] << " >= " << modulus);
     }
