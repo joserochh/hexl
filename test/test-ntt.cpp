@@ -229,7 +229,7 @@ TEST(NTT, root_of_unity2) {
 }
 
 // Parameters = (degree, modulus, input, expected_output)
-class NTTTest
+class DegreeModulusInputOutput
     : public ::testing::TestWithParam<std::tuple<
           uint64_t, uint64_t, std::vector<uint64_t>, std::vector<uint64_t>>> {
  protected:
@@ -241,7 +241,7 @@ class NTTTest
 };
 
 // Test different parts of the public API
-TEST_P(NTTTest, API) {
+TEST_P(DegreeModulusInputOutput, API) {
   uint64_t N = std::get<0>(GetParam());
   uint64_t modulus = std::get<1>(GetParam());
 
@@ -297,7 +297,7 @@ TEST_P(NTTTest, API) {
 }
 
 INSTANTIATE_TEST_SUITE_P(
-    NTT, NTTTest,
+    NTT, DegreeModulusInputOutput,
     ::testing::Values(
         std::make_tuple(2, 281474976710897, std::vector<uint64_t>{0, 0},
                         std::vector<uint64_t>{0, 0}),
@@ -345,7 +345,9 @@ INSTANTIATE_TEST_SUITE_P(
                                   12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
                                   23, 24, 25, 26, 27, 28, 29, 30, 31, 32})));
 
-class FwdNTTZerosTest
+// First argument is NTT degree
+// Second argument is number of bits in the NTT modulus
+class DegreeModulusTest
     : public ::testing::TestWithParam<std::tuple<uint64_t, uint64_t>> {
  protected:
   void SetUp() {}
@@ -355,7 +357,7 @@ class FwdNTTZerosTest
 };
 
 // Parameters = (degree, modulus_bits)
-TEST_P(FwdNTTZerosTest, Zeros) {
+TEST_P(DegreeModulusTest, ForwardZeros) {
   uint64_t N = std::get<0>(GetParam());
   uint64_t modulus_bits = std::get<1>(GetParam());
   uint64_t modulus = GeneratePrimes(1, modulus_bits, N)[0];
@@ -369,30 +371,8 @@ TEST_P(FwdNTTZerosTest, Zeros) {
   AssertEqual(input, exp_output);
 }
 
-INSTANTIATE_TEST_SUITE_P(
-    NTT, FwdNTTZerosTest,
-    ::testing::Values(
-        std::make_tuple(1 << 1, 30), std::make_tuple(1 << 2, 30),
-        std::make_tuple(1 << 3, 30), std::make_tuple(1 << 4, 35),
-        std::make_tuple(1 << 5, 35), std::make_tuple(1 << 6, 35),
-        std::make_tuple(1 << 7, 40), std::make_tuple(1 << 8, 40),
-        std::make_tuple(1 << 9, 40), std::make_tuple(1 << 10, 45),
-        std::make_tuple(1 << 11, 45), std::make_tuple(1 << 12, 45),
-        std::make_tuple(1 << 13, 50), std::make_tuple(1 << 14, 50),
-        std::make_tuple(1 << 15, 50), std::make_tuple(1 << 16, 55),
-        std::make_tuple(1 << 17, 55)));
-
-class InvNTTZerosTest
-    : public ::testing::TestWithParam<std::tuple<uint64_t, uint64_t>> {
- protected:
-  void SetUp() {}
-  void TearDown() {}
-
- public:
-};
-
 // Parameters = (degree, modulus_bits)
-TEST_P(InvNTTZerosTest, Zeros) {
+TEST_P(DegreeModulusTest, InverseZeros) {
   uint64_t N = std::get<0>(GetParam());
   uint64_t modulus_bits = std::get<1>(GetParam());
   uint64_t modulus = GeneratePrimes(1, modulus_bits, N)[0];
@@ -406,29 +386,7 @@ TEST_P(InvNTTZerosTest, Zeros) {
   AssertEqual(input, exp_output);
 }
 
-INSTANTIATE_TEST_SUITE_P(
-    NTT, InvNTTZerosTest,
-    ::testing::Values(
-        std::make_tuple(1 << 1, 30), std::make_tuple(1 << 2, 30),
-        std::make_tuple(1 << 3, 30), std::make_tuple(1 << 4, 35),
-        std::make_tuple(1 << 5, 35), std::make_tuple(1 << 6, 35),
-        std::make_tuple(1 << 7, 40), std::make_tuple(1 << 8, 40),
-        std::make_tuple(1 << 9, 40), std::make_tuple(1 << 10, 45),
-        std::make_tuple(1 << 11, 45), std::make_tuple(1 << 12, 45),
-        std::make_tuple(1 << 13, 50), std::make_tuple(1 << 14, 50),
-        std::make_tuple(1 << 15, 50), std::make_tuple(1 << 16, 55),
-        std::make_tuple(1 << 17, 55)));
-
-class ForwardRadix4Test
-    : public ::testing::TestWithParam<std::tuple<uint64_t, uint64_t>> {
- protected:
-  void SetUp() {}
-  void TearDown() {}
-
- public:
-};
-
-TEST_P(ForwardRadix4Test, Random) {
+TEST_P(DegreeModulusTest, ForwardRadix4Random) {
   uint64_t N = std::get<0>(GetParam());
   uint64_t modulus_bits = std::get<1>(GetParam());
   uint64_t modulus = GeneratePrimes(1, modulus_bits, N)[0];
@@ -455,8 +413,36 @@ TEST_P(ForwardRadix4Test, Random) {
   AssertEqual(input, input_radix4);
 }
 
+TEST_P(DegreeModulusTest, InverseRadix4Random) {
+  uint64_t N = std::get<0>(GetParam());
+  uint64_t modulus_bits = std::get<1>(GetParam());
+  uint64_t modulus = GeneratePrimes(1, modulus_bits, N)[0];
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<uint64_t> distrib(1, modulus - 1);
+
+  std::vector<uint64_t> input(N);
+  for (size_t i = 0; i < N; ++i) {
+    input[i] = distrib(gen);
+  }
+
+  NTT ntt(N, modulus);
+
+  auto input_radix4 = input;
+  InverseTransformFromBitReverseRadix4(
+      input_radix4.data(), N, modulus, ntt.GetInvRootOfUnityPowers().data(),
+      ntt.GetPrecon64InvRootOfUnityPowers().data(), 2, 1);
+
+  InverseTransformFromBitReverse64(
+      input.data(), N, modulus, ntt.GetInvRootOfUnityPowers().data(),
+      ntt.GetPrecon64InvRootOfUnityPowers().data(), 2, 1);
+
+  AssertEqual(input, input_radix4);
+}
+
 INSTANTIATE_TEST_SUITE_P(
-    NTT, ForwardRadix4Test,
+    NTT, DegreeModulusTest,
     ::testing::Values(
         std::make_tuple(1 << 1, 30), std::make_tuple(1 << 2, 30),
         std::make_tuple(1 << 3, 30), std::make_tuple(1 << 4, 35),
