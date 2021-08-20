@@ -257,13 +257,18 @@ void InverseTransformFromBitReverseRadix4(
   HEXL_CHECK(output_mod_factor == 1 || output_mod_factor == 2,
              "output_mod_factor must be 1 or 2; got " << output_mod_factor);
 
-  HEXL_VLOG(3, "modulus " << modulus);
-  HEXL_VLOG(3, "n " << n);
+  HEXL_VLOG(2, "InverseTransformFromBitReverseRadix4");
 
-  HEXL_VLOG(3, "operand " << std::vector<uint64_t>(operand, operand + n));
+  HEXL_VLOG(2, "modulus " << modulus);
+  HEXL_VLOG(2, "n " << n);
 
-  HEXL_VLOG(3, "root_of_unity_powers " << std::vector<uint64_t>(
-                   root_of_unity_powers, root_of_unity_powers + n));
+  HEXL_VLOG(2, "operand " << std::vector<uint64_t>(operand, operand + n));
+
+  HEXL_VLOG(2, "inv_root_of_unity_powers " << std::vector<uint64_t>(
+                   inv_root_of_unity_powers, inv_root_of_unity_powers + n));
+  HEXL_VLOG(2, "precon_inv_root_of_unity_powers " << std::vector<uint64_t>(
+                   precon_inv_root_of_unity_powers,
+                   precon_inv_root_of_unity_powers + n));
 
   bool is_power_of_4 = IsPowerOfFour(n);
 
@@ -295,77 +300,6 @@ void InverseTransformFromBitReverseRadix4(
     size_t j1 = 0;
 
     switch (t) {
-      case 1: {
-        for (size_t i = 0; i < m; i++, root_index++) {
-          if (i != 0) {
-            j1 += (t << 1);
-          }
-          const uint64_t W = inv_root_of_unity_powers[root_index];
-          const uint64_t W_precon = precon_inv_root_of_unity_powers[root_index];
-
-          uint64_t* X = operand + j1;
-          uint64_t* Y = X + t;
-
-          InvButterfly(X, Y, W, W_precon, modulus, twice_modulus);
-        }
-        break;
-      }
-      case 2: {
-        for (size_t i = 0; i < m; i++, root_index++) {
-          if (i != 0) {
-            j1 += (t << 1);
-          }
-          const uint64_t W = inv_root_of_unity_powers[root_index];
-          const uint64_t W_precon = precon_inv_root_of_unity_powers[root_index];
-
-          uint64_t* X = operand + j1;
-          uint64_t* Y = X + t;
-
-          InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
-          InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
-        }
-        break;
-      }
-      case 4: {
-        for (size_t i = 0; i < m; i++, root_index++) {
-          if (i != 0) {
-            j1 += (t << 1);
-          }
-          const uint64_t W = inv_root_of_unity_powers[root_index];
-          const uint64_t W_precon = precon_inv_root_of_unity_powers[root_index];
-
-          uint64_t* X = operand + j1;
-          uint64_t* Y = X + t;
-
-          InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
-          InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
-          InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
-          InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
-        }
-        break;
-      }
-      case 8: {
-        for (size_t i = 0; i < m; i++, root_index++) {
-          if (i != 0) {
-            j1 += (t << 1);
-          }
-          const uint64_t W = inv_root_of_unity_powers[root_index];
-          const uint64_t W_precon = precon_inv_root_of_unity_powers[root_index];
-
-          uint64_t* X = operand + j1;
-          uint64_t* Y = X + t;
-
-          InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
-          InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
-          InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
-          InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
-          InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
-          InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
-          InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
-          InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
-        }
-        break;
-      }
       default: {
         for (size_t i = 0; i < m; i++, root_index++) {
           if (i != 0) {
@@ -377,14 +311,7 @@ void InverseTransformFromBitReverseRadix4(
           uint64_t* X = operand + j1;
           uint64_t* Y = X + t;
           HEXL_LOOP_UNROLL_8
-          for (size_t j = 0; j < t; j += 8) {
-            InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
-            InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
-            InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
-            InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
-            InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
-            InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
-            InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
+          for (size_t j = 0; j < t; j++) {
             InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
           }
         }
