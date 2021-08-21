@@ -317,7 +317,7 @@ void InverseTransformFromBitReverseRadix4(
     size_t X0_offset = 0;
 
     switch (t) {
-      default: {
+      case 1: {
         for (size_t i = 0; i < m / 2; i++, final_root_index++) {
           HEXL_VLOG(4, "i " << i);
           if (i != 0) {
@@ -329,14 +329,9 @@ void InverseTransformFromBitReverseRadix4(
           uint64_t* X2 = X0 + 2 * t;
           uint64_t* X3 = X0 + 3 * t;
 
-          std::vector<uint64_t> X_inds{X0_offset, X0_offset + t,
-                                       X0_offset + 2 * t, X0_offset + 3 * t};
-
-          HEXL_VLOG(4, "X_inds " << X_inds);
-
-          uint64_t W1_ind = w1_root_index;      // m + i;
-          uint64_t W2_ind = w1_root_index + 1;  // 2 * W1_ind;
-          uint64_t W3_ind = w3_root_index;      // 2 * W1_ind + 1;
+          uint64_t W1_ind = w1_root_index;
+          uint64_t W2_ind = w1_root_index + 1;
+          uint64_t W3_ind = w3_root_index;
 
           w3_root_index++;
           w1_root_index += 2;
@@ -353,10 +348,83 @@ void InverseTransformFromBitReverseRadix4(
           const uint64_t W2_precon = precon_inv_root_of_unity_powers[W2_ind];
           const uint64_t W3_precon = precon_inv_root_of_unity_powers[W3_ind];
 
-          // const uint64_t W = inv_root_of_unity_powers[root_index];
-          // const uint64_t W_precon =
-          // precon_inv_root_of_unity_powers[root_index]; uint64_t* X = operand
-          // + j1; uint64_t* Y = X + t;
+          InvButterflyRadix4(X0, X1, X2, X3, W1, W1_precon, W2, W2_precon, W3,
+                             W3_precon, modulus, twice_modulus);
+        }
+        break;
+      }
+      case 4: {
+        for (size_t i = 0; i < m / 2; i++, final_root_index++) {
+          HEXL_VLOG(4, "i " << i);
+          if (i != 0) {
+            X0_offset += 4 * t;
+          }
+
+          uint64_t* X0 = operand + X0_offset;
+          uint64_t* X1 = X0 + t;
+          uint64_t* X2 = X0 + 2 * t;
+          uint64_t* X3 = X0 + 3 * t;
+
+          uint64_t W1_ind = w1_root_index;
+          uint64_t W2_ind = w1_root_index + 1;
+          uint64_t W3_ind = w3_root_index;
+
+          w3_root_index++;
+          w1_root_index += 2;
+
+          HEXL_VLOG(4, "W1_ind " << W1_ind);
+          HEXL_VLOG(4, "W2_ind " << W2_ind);
+          HEXL_VLOG(4, "W3_ind " << W3_ind);
+
+          const uint64_t W1 = inv_root_of_unity_powers[W1_ind];
+          const uint64_t W2 = inv_root_of_unity_powers[W2_ind];
+          const uint64_t W3 = inv_root_of_unity_powers[W3_ind];
+
+          const uint64_t W1_precon = precon_inv_root_of_unity_powers[W1_ind];
+          const uint64_t W2_precon = precon_inv_root_of_unity_powers[W2_ind];
+          const uint64_t W3_precon = precon_inv_root_of_unity_powers[W3_ind];
+
+          InvButterflyRadix4(X0++, X1++, X2++, X3++, W1, W1_precon, W2,
+                             W2_precon, W3, W3_precon, modulus, twice_modulus);
+          InvButterflyRadix4(X0++, X1++, X2++, X3++, W1, W1_precon, W2,
+                             W2_precon, W3, W3_precon, modulus, twice_modulus);
+          InvButterflyRadix4(X0++, X1++, X2++, X3++, W1, W1_precon, W2,
+                             W2_precon, W3, W3_precon, modulus, twice_modulus);
+          InvButterflyRadix4(X0++, X1++, X2++, X3++, W1, W1_precon, W2,
+                             W2_precon, W3, W3_precon, modulus, twice_modulus);
+        }
+        break;
+      }
+      default: {
+        for (size_t i = 0; i < m / 2; i++, final_root_index++) {
+          HEXL_VLOG(4, "i " << i);
+          if (i != 0) {
+            X0_offset += 4 * t;
+          }
+
+          uint64_t* X0 = operand + X0_offset;
+          uint64_t* X1 = X0 + t;
+          uint64_t* X2 = X0 + 2 * t;
+          uint64_t* X3 = X0 + 3 * t;
+
+          uint64_t W1_ind = w1_root_index;
+          uint64_t W2_ind = w1_root_index + 1;
+          uint64_t W3_ind = w3_root_index;
+
+          w3_root_index++;
+          w1_root_index += 2;
+
+          HEXL_VLOG(4, "W1_ind " << W1_ind);
+          HEXL_VLOG(4, "W2_ind " << W2_ind);
+          HEXL_VLOG(4, "W3_ind " << W3_ind);
+
+          const uint64_t W1 = inv_root_of_unity_powers[W1_ind];
+          const uint64_t W2 = inv_root_of_unity_powers[W2_ind];
+          const uint64_t W3 = inv_root_of_unity_powers[W3_ind];
+
+          const uint64_t W1_precon = precon_inv_root_of_unity_powers[W1_ind];
+          const uint64_t W2_precon = precon_inv_root_of_unity_powers[W2_ind];
+          const uint64_t W3_precon = precon_inv_root_of_unity_powers[W3_ind];
 
           HEXL_LOOP_UNROLL_8
           for (size_t j = 0; j < t; j++) {
