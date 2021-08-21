@@ -291,7 +291,7 @@ void InverseTransformFromBitReverseRadix4(
       X++;
       Y++;
     }
-    // Data in [0, 4q)
+    // Data in [0, 2q)
   }
 
   uint64_t m_start = n >> (is_power_of_4 ? 2 : 1);
@@ -390,6 +390,7 @@ void InverseTransformFromBitReverseRadix4(
         break;
       }
       default: {
+        HEXL_LOOP_UNROLL_4
         for (size_t i = 0; i < m / 2; i++) {
           HEXL_VLOG(4, "i " << i);
           if (i != 0) {
@@ -420,7 +421,6 @@ void InverseTransformFromBitReverseRadix4(
           const uint64_t W2_precon = precon_inv_root_of_unity_powers[W2_ind];
           const uint64_t W3_precon = precon_inv_root_of_unity_powers[W3_ind];
 
-          HEXL_LOOP_UNROLL_8
           for (size_t j = 0; j < t; j++) {
             HEXL_VLOG(4, "j " << j);
             InvButterflyRadix4(X0++, X1++, X2++, X3++, W1, W1_precon, W2,
