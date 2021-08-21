@@ -369,6 +369,8 @@ void InverseTransformFromBitReverseRadix4(
       }
     }
     t <<= 2;
+    w1_root_index += m / 2;
+    w3_root_index += m / 4;
   }
 
   HEXL_VLOG(4, "Starting final invNTT stage");
