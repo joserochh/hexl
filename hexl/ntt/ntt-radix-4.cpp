@@ -294,7 +294,7 @@ void InverseTransformFromBitReverseRadix4(
     // Data in [0, 2q)
   }
 
-  uint64_t m_start = n >> (is_power_of_4 ? 2 : 1);
+  uint64_t m_start = n >> (is_power_of_4 ? 3 : 2);
   size_t t = is_power_of_4 ? 2 : 1;
 
   size_t w1_root_index = is_power_of_4 ? (n / 2 + 1) : 1;
@@ -302,7 +302,7 @@ void InverseTransformFromBitReverseRadix4(
 
   HEXL_VLOG(4, "m_start " << m_start);
 
-  for (size_t m = m_start; m > 1; m >>= 2) {
+  for (size_t m = m_start; m > 0; m >>= 2) {
     HEXL_VLOG(4, "m " << m);
     HEXL_VLOG(4, "t " << t);
 
@@ -310,7 +310,7 @@ void InverseTransformFromBitReverseRadix4(
 
     switch (t) {
       case 1: {
-        for (size_t i = 0; i < m / 2; i++) {
+        for (size_t i = 0; i < m; i++) {
           HEXL_VLOG(4, "i " << i);
           if (i != 0) {
             X0_offset += 4 * t;
@@ -343,7 +343,7 @@ void InverseTransformFromBitReverseRadix4(
         break;
       }
       case 4: {
-        for (size_t i = 0; i < m / 2; i++) {
+        for (size_t i = 0; i < m; i++) {
           HEXL_VLOG(4, "i " << i);
           if (i != 0) {
             X0_offset += 4 * t;
@@ -383,7 +383,7 @@ void InverseTransformFromBitReverseRadix4(
       }
       default: {
         HEXL_LOOP_UNROLL_4
-        for (size_t i = 0; i < m / 2; i++) {
+        for (size_t i = 0; i < m; i++) {
           HEXL_VLOG(4, "i " << i);
           if (i != 0) {
             X0_offset += 4 * t;
@@ -420,8 +420,8 @@ void InverseTransformFromBitReverseRadix4(
       }
     }
     t <<= 2;
-    w1_root_index += m / 2;
-    w3_root_index += m / 4;
+    w1_root_index += m;
+    w3_root_index += m / 2;
   }
 
   HEXL_VLOG(4, "Starting final invNTT stage");
