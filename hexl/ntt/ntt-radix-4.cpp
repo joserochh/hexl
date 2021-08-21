@@ -275,27 +275,21 @@ void InverseTransformFromBitReverseRadix4(
   HEXL_VLOG(3, "is_power_of_4" << is_power_of_4);
 
   uint64_t twice_modulus = modulus << 1;
-  uint64_t four_times_modulus = modulus << 2;
-  size_t final_root_index = 1;
 
   // Radix-2 step for powers of 4
   if (is_power_of_4) {
     HEXL_VLOG(3, "Radix 2 step");
 
-    size_t root_index = 1;
-
     uint64_t* X = operand;
     uint64_t* Y = X + 1;
+    const uint64_t* W = inv_root_of_unity_powers + 1;
+    const uint64_t* W_precon = precon_inv_root_of_unity_powers + 1;
+
     HEXL_LOOP_UNROLL_8
     for (size_t j = 0; j < (n >> 1); j++) {
-      const uint64_t W = inv_root_of_unity_powers[root_index];
-      const uint64_t W_precon = precon_inv_root_of_unity_powers[root_index];
-      InvButterfly(X++, Y++, W, W_precon, modulus, twice_modulus);
+      InvButterfly(X++, Y++, *W++, *W_precon++, modulus, twice_modulus);
       X++;
       Y++;
-
-      root_index++;
-      final_root_index++;
     }
     // Data in [0, 4q)
   }
@@ -303,7 +297,7 @@ void InverseTransformFromBitReverseRadix4(
   uint64_t m_start = n >> (is_power_of_4 ? 2 : 1);
   size_t t = is_power_of_4 ? 2 : 1;
 
-  size_t w1_root_index = final_root_index;
+  size_t w1_root_index = is_power_of_4 ? (n / 2 + 1) : 1;
   size_t w3_root_index = is_power_of_4 ? (n / 2 + n / 4 + 1) : (n / 2 + 1);
 
   HEXL_VLOG(4, "m_start " << m_start);
@@ -318,7 +312,7 @@ void InverseTransformFromBitReverseRadix4(
 
     switch (t) {
       case 1: {
-        for (size_t i = 0; i < m / 2; i++, final_root_index++) {
+        for (size_t i = 0; i < m / 2; i++) {
           HEXL_VLOG(4, "i " << i);
           if (i != 0) {
             X0_offset += 4 * t;
@@ -354,7 +348,7 @@ void InverseTransformFromBitReverseRadix4(
         break;
       }
       case 4: {
-        for (size_t i = 0; i < m / 2; i++, final_root_index++) {
+        for (size_t i = 0; i < m / 2; i++) {
           HEXL_VLOG(4, "i " << i);
           if (i != 0) {
             X0_offset += 4 * t;
@@ -390,13 +384,13 @@ void InverseTransformFromBitReverseRadix4(
                              W2_precon, W3, W3_precon, modulus, twice_modulus);
           InvButterflyRadix4(X0++, X1++, X2++, X3++, W1, W1_precon, W2,
                              W2_precon, W3, W3_precon, modulus, twice_modulus);
-          InvButterflyRadix4(X0++, X1++, X2++, X3++, W1, W1_precon, W2,
-                             W2_precon, W3, W3_precon, modulus, twice_modulus);
+          InvButterflyRadix4(X0++, X1, X2, X3, W1, W1_precon, W2, W2_precon, W3,
+                             W3_precon, modulus, twice_modulus);
         }
         break;
       }
       default: {
-        for (size_t i = 0; i < m / 2; i++, final_root_index++) {
+        for (size_t i = 0; i < m / 2; i++) {
           HEXL_VLOG(4, "i " << i);
           if (i != 0) {
             X0_offset += 4 * t;
