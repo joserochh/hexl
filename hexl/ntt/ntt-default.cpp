@@ -215,6 +215,7 @@ void InverseTransformFromBitReverse64(
           }
           const uint64_t W = inv_root_of_unity_powers[root_index];
           const uint64_t W_precon = precon_inv_root_of_unity_powers[root_index];
+          HEXL_VLOG(3, "W_idx " << root_index);
 
           uint64_t* X = operand + j1;
           uint64_t* Y = X + t;
@@ -230,6 +231,7 @@ void InverseTransformFromBitReverse64(
           }
           const uint64_t W = inv_root_of_unity_powers[root_index];
           const uint64_t W_precon = precon_inv_root_of_unity_powers[root_index];
+          HEXL_VLOG(3, "W_idx " << root_index);
 
           uint64_t* X = operand + j1;
           uint64_t* Y = X + t;
@@ -246,6 +248,7 @@ void InverseTransformFromBitReverse64(
           }
           const uint64_t W = inv_root_of_unity_powers[root_index];
           const uint64_t W_precon = precon_inv_root_of_unity_powers[root_index];
+          HEXL_VLOG(3, "W_idx " << root_index);
 
           uint64_t* X = operand + j1;
           uint64_t* Y = X + t;
@@ -264,6 +267,7 @@ void InverseTransformFromBitReverse64(
           }
           const uint64_t W = inv_root_of_unity_powers[root_index];
           const uint64_t W_precon = precon_inv_root_of_unity_powers[root_index];
+          HEXL_VLOG(3, "W_idx " << root_index);
 
           uint64_t* X = operand + j1;
           uint64_t* Y = X + t;
@@ -285,6 +289,7 @@ void InverseTransformFromBitReverse64(
             j1 += (t << 1);
           }
           const uint64_t W = inv_root_of_unity_powers[root_index];
+          HEXL_VLOG(3, "W_idx " << root_index);
           const uint64_t W_precon = precon_inv_root_of_unity_powers[root_index];
 
           uint64_t* X = operand + j1;
@@ -306,8 +311,13 @@ void InverseTransformFromBitReverse64(
     t <<= 1;
   }
 
+  HEXL_VLOG(4, "Starting final invNTT stage");
+  HEXL_VLOG(4, "operand " << std::vector<uint64_t>(operand, operand + n));
+
   // Fold multiplication by N^{-1} to final stage butterfly
   const uint64_t W = inv_root_of_unity_powers[root_index];
+  HEXL_VLOG(4, "final W " << W);
+
   const uint64_t inv_n = InverseMod(n, modulus);
   uint64_t inv_n_precon = MultiplyFactor(inv_n, 64, modulus).BarrettFactor();
   const uint64_t inv_n_w = MultiplyMod(inv_n, W, modulus);

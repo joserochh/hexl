@@ -257,7 +257,7 @@ void InverseTransformFromBitReverseRadix4(
   HEXL_CHECK(output_mod_factor == 1 || output_mod_factor == 2,
              "output_mod_factor must be 1 or 2; got " << output_mod_factor);
 
-  HEXL_VLOG(2, "InverseTransformFromBitReverseRadix4");
+  HEXL_VLOG(2, "\n\n\n\nInverseTransformFromBitReverseRadix4");
 
   HEXL_VLOG(2, "modulus " << modulus);
   HEXL_VLOG(2, "n " << n);
@@ -271,6 +271,8 @@ void InverseTransformFromBitReverseRadix4(
                    precon_inv_root_of_unity_powers + n));
 
   bool is_power_of_4 = IsPowerOfFour(n);
+
+  HEXL_VLOG(3, "is_power_of_4" << is_power_of_4);
 
   uint64_t twice_modulus = modulus << 1;
   uint64_t four_times_modulus = modulus << 2;
@@ -301,8 +303,10 @@ void InverseTransformFromBitReverseRadix4(
   uint64_t m_start = n >> (is_power_of_4 ? 2 : 1);
   size_t t = is_power_of_4 ? 2 : 1;
 
-  size_t w1_root_index = 1;
-  size_t w3_root_index = m_start + 1;
+  size_t w1_root_index = final_root_index;
+  size_t w3_root_index = is_power_of_4 ? (n / 2 + n / 4 + 1) : (n / 2 + 1);
+
+  HEXL_VLOG(4, "m_start " << m_start);
 
   for (size_t m = m_start; m > 1; m >>= 2) {
     HEXL_VLOG(4, "m " << m);
@@ -324,6 +328,11 @@ void InverseTransformFromBitReverseRadix4(
           uint64_t* X1 = X0 + t;
           uint64_t* X2 = X0 + 2 * t;
           uint64_t* X3 = X0 + 3 * t;
+
+          std::vector<uint64_t> X_inds{X0_offset, X0_offset + t,
+                                       X0_offset + 2 * t, X0_offset + 3 * t};
+
+          HEXL_VLOG(4, "X_inds " << X_inds);
 
           uint64_t W1_ind = w1_root_index;      // m + i;
           uint64_t W2_ind = w1_root_index + 1;  // 2 * W1_ind;
@@ -352,8 +361,9 @@ void InverseTransformFromBitReverseRadix4(
           HEXL_LOOP_UNROLL_8
           for (size_t j = 0; j < t; j++) {
             HEXL_VLOG(4, "j " << j);
-            InvButterflyRadix4(X0, X1, X2, X3, W1, W1_precon, W2, W2_precon, W3,
-                               W3_precon, modulus, twice_modulus);
+            InvButterflyRadix4(X0++, X1++, X2++, X3++, W1, W1_precon, W2,
+                               W2_precon, W3, W3_precon, modulus,
+                               twice_modulus);
           }
         }
       }
@@ -361,10 +371,13 @@ void InverseTransformFromBitReverseRadix4(
     t <<= 2;
   }
 
-  HEXL_VLOG(4, "Starting final invNTT butterfly");
+  HEXL_VLOG(4, "Starting final invNTT stage");
+  HEXL_VLOG(4, "operand " << std::vector<uint64_t>(operand, operand + n));
 
   // Fold multiplication by N^{-1} to final stage butterfly
-  const uint64_t W = inv_root_of_unity_powers[final_root_index];
+  const uint64_t W = inv_root_of_unity_powers[n - 1];
+  HEXL_VLOG(4, "final W " << W);
+
   const uint64_t inv_n = InverseMod(n, modulus);
   uint64_t inv_n_precon = MultiplyFactor(inv_n, 64, modulus).BarrettFactor();
   const uint64_t inv_n_w = MultiplyMod(inv_n, W, modulus);
