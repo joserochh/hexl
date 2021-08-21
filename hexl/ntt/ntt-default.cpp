@@ -315,7 +315,7 @@ void InverseTransformFromBitReverse64(
   HEXL_VLOG(4, "operand " << std::vector<uint64_t>(operand, operand + n));
 
   // Fold multiplication by N^{-1} to final stage butterfly
-  const uint64_t W = inv_root_of_unity_powers[root_index];
+  const uint64_t W = inv_root_of_unity_powers[n - 1];
   HEXL_VLOG(4, "final W " << W);
 
   const uint64_t inv_n = InverseMod(n, modulus);
@@ -330,10 +330,7 @@ void InverseTransformFromBitReverse64(
     // Assume X, Y in [0, 2q) and compute
     // X' = N^{-1} (X + Y) (mod q)
     // Y' = N^{-1} * W * (X - Y) (mod q)
-    uint64_t tx = X[j] + Y[j];
-    if (tx >= twice_modulus) {
-      tx -= twice_modulus;
-    }
+    uint64_t tx = AddUIntMod(X[j], Y[j], twice_modulus);
     uint64_t ty = X[j] + twice_modulus - Y[j];
     X[j] = MultiplyModLazy<64>(tx, inv_n, inv_n_precon, modulus);
     Y[j] = MultiplyModLazy<64>(ty, inv_n_w, inv_n_w_precon, modulus);

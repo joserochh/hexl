@@ -304,8 +304,6 @@ void InverseTransformFromBitReverseRadix4(
 
   for (size_t m = m_start; m > 1; m >>= 2) {
     HEXL_VLOG(4, "m " << m);
-    size_t j1 = 0;
-
     HEXL_VLOG(4, "t " << t);
 
     size_t X0_offset = 0;
@@ -323,12 +321,9 @@ void InverseTransformFromBitReverseRadix4(
           uint64_t* X2 = X0 + 2 * t;
           uint64_t* X3 = X0 + 3 * t;
 
-          uint64_t W1_ind = w1_root_index;
-          uint64_t W2_ind = w1_root_index + 1;
-          uint64_t W3_ind = w3_root_index;
-
-          w3_root_index++;
-          w1_root_index += 2;
+          uint64_t W1_ind = w1_root_index++;
+          uint64_t W2_ind = w1_root_index++;
+          uint64_t W3_ind = w3_root_index++;
 
           HEXL_VLOG(4, "W1_ind " << W1_ind);
           HEXL_VLOG(4, "W2_ind " << W2_ind);
@@ -359,12 +354,9 @@ void InverseTransformFromBitReverseRadix4(
           uint64_t* X2 = X0 + 2 * t;
           uint64_t* X3 = X0 + 3 * t;
 
-          uint64_t W1_ind = w1_root_index;
-          uint64_t W2_ind = w1_root_index + 1;
-          uint64_t W3_ind = w3_root_index;
-
-          w3_root_index++;
-          w1_root_index += 2;
+          uint64_t W1_ind = w1_root_index++;
+          uint64_t W2_ind = w1_root_index++;
+          uint64_t W3_ind = w3_root_index++;
 
           HEXL_VLOG(4, "W1_ind " << W1_ind);
           HEXL_VLOG(4, "W2_ind " << W2_ind);
@@ -384,7 +376,7 @@ void InverseTransformFromBitReverseRadix4(
                              W2_precon, W3, W3_precon, modulus, twice_modulus);
           InvButterflyRadix4(X0++, X1++, X2++, X3++, W1, W1_precon, W2,
                              W2_precon, W3, W3_precon, modulus, twice_modulus);
-          InvButterflyRadix4(X0++, X1, X2, X3, W1, W1_precon, W2, W2_precon, W3,
+          InvButterflyRadix4(X0, X1, X2, X3, W1, W1_precon, W2, W2_precon, W3,
                              W3_precon, modulus, twice_modulus);
         }
         break;
@@ -402,12 +394,9 @@ void InverseTransformFromBitReverseRadix4(
           uint64_t* X2 = X0 + 2 * t;
           uint64_t* X3 = X0 + 3 * t;
 
-          uint64_t W1_ind = w1_root_index;
-          uint64_t W2_ind = w1_root_index + 1;
-          uint64_t W3_ind = w3_root_index;
-
-          w3_root_index++;
-          w1_root_index += 2;
+          uint64_t W1_ind = w1_root_index++;
+          uint64_t W2_ind = w1_root_index++;
+          uint64_t W3_ind = w3_root_index++;
 
           HEXL_VLOG(4, "W1_ind " << W1_ind);
           HEXL_VLOG(4, "W2_ind " << W2_ind);
