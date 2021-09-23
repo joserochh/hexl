@@ -377,12 +377,20 @@ inline __m512i _mm512_hexl_barrett_reduce64(__m512i x, __m512i q,
   HEXL_CHECK(BitShift == 52 || BitShift == 64,
              "Invalid bitshift " << BitShift << "; need 52 or 64");
 
+  HEXL_VLOG(2, "_mm512_hexl_barrett_reduce64 BitShift " << BitShift);
+  HEXL_VLOG(2, "x " << ExtractValues(x));
+  HEXL_VLOG(2, "q " << ExtractValues(q));
+  HEXL_VLOG(2, "q_barr " << ExtractValues(q_barr));
+
 #ifdef HEXL_HAS_AVX512IFMA
   if (BitShift == 52) {
     __m512i rnd1_hi = _mm512_hexl_mulhi_epi<52>(x, q_barr);
+
+    HEXL_VLOG(2, "rnd1_hi " << ExtractValues(rnd1_hi));
     // Barrett subtraction
     // tmp[0] = input - tmp[1] * q;
     __m512i tmp1_times_mod = _mm512_hexl_mullo_epi<52>(rnd1_hi, q);
+    HEXL_VLOG(2, "tmp1_times_mod " << ExtractValues(tmp1_times_mod));
     x = _mm512_sub_epi64(x, tmp1_times_mod);
   }
 #endif
