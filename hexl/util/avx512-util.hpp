@@ -125,7 +125,7 @@ inline __m512i _mm512_hexl_mulhi_epi<64>(__m512i x, __m512i y) {
 #ifdef HEXL_HAS_AVX512IFMA
 template <>
 inline __m512i _mm512_hexl_mulhi_epi<52>(__m512i x, __m512i y) {
-  __m512i zero = _mm512_set1_epi64(0);
+  static __m512i zero = _mm512_set1_epi64(0);
   return _mm512_madd52hi_epu64(zero, x, y);
 }
 #endif
@@ -184,7 +184,7 @@ inline __m512i _mm512_hexl_mulhi_approx_epi<64>(__m512i x, __m512i y) {
 #ifdef HEXL_HAS_AVX512IFMA
 template <>
 inline __m512i _mm512_hexl_mulhi_approx_epi<52>(__m512i x, __m512i y) {
-  __m512i zero = _mm512_set1_epi64(0);
+  static __m512i zero = _mm512_set1_epi64(0);
   return _mm512_madd52hi_epu64(zero, x, y);
 }
 #endif
@@ -212,7 +212,7 @@ inline __m512i _mm512_hexl_mullo_epi<64>(__m512i x, __m512i y) {
 #ifdef HEXL_HAS_AVX512IFMA
 template <>
 inline __m512i _mm512_hexl_mullo_epi<52>(__m512i x, __m512i y) {
-  __m512i zero = _mm512_set1_epi64(0);
+  static __m512i zero = _mm512_set1_epi64(0);
   return _mm512_madd52lo_epu64(zero, x, y);
 }
 #endif
