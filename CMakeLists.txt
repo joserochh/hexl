@@ -32,14 +32,8 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type" FORCE)
 endif()
 
-if (HEXL_DEBUG)
-  set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Build type" FORCE)
-endif()
-
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
   set(HEXL_DEBUG ON)
-else()
-  set(HEXL_DEBUG OFF)
 endif()
 
 set(CMAKE_CXX_STANDARD 11)
