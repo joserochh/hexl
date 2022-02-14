@@ -1,4 +1,4 @@
-# Copyright (C) 2020-2021 Intel Corporation
+9# Copyright (C) 2020-2021 Intel Corporation
 # SPDX-License-Identifier: Apache-2.0
 
 # target_link_options and cmake -S . -B build require cmake 3.13
@@ -164,7 +164,6 @@ if (HEXL_BENCHMARK)
   add_subdirectory(cmake/third-party/gbenchmark)
 endif()
 
-if (HEXL_DEBUG)
   list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake/third-party/easylogging")
   find_package(EASYLOGGINGPP MODULE)
   if (EASYLOGGINGPP_FOUND)
@@ -177,7 +176,6 @@ if (HEXL_DEBUG)
     message(STATUS "easyloggingpp: pre-installed easyloggingpp NOT found, building from source")
     add_subdirectory(cmake/third-party/easylogging)
   endif()
-endif()
 
 #------------------------------------------------------------------------------
 # Subfolders...
