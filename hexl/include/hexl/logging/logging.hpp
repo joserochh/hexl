@@ -26,11 +26,10 @@
 #include <easylogging++.h>
 
 #define HEXL_VLOG(N, rest) \
-  do {                     \
-    if (VLOG_IS_ON(N)) {   \
-      VLOG(N) << rest;     \
-    }                      \
-  } while (0);
+  {}
+
+#define START_EASYLOGGINGPP(X, Y) \
+  {}
 
 #else
 
