@@ -3,6 +3,4 @@
 
 #include "hexl/logging/logging.hpp"
 
-#ifdef HEXL_DEBUG
 INITIALIZE_EASYLOGGINGPP
-#endif

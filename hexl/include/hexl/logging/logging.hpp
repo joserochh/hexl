@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include <easylogging++.h>
+
 #include <algorithm>
 #include <vector>
 
@@ -10,7 +12,6 @@
 
 // Wrap HEXL_VLOG with HEXL_DEBUG; this ensures no logging overhead in
 // release mode
-#ifdef HEXL_DEBUG
 
 // TODO(fboemer) Enable if needed
 // #define ELPP_THREAD_SAFE
@@ -23,21 +24,9 @@
 #define ELPP_DISABLE_DEFAULT_CRASH_HANDLING
 #define ELPP_WINSOCK2
 
-#include <easylogging++.h>
-
 #define HEXL_VLOG(N, rest) \
   do {                     \
     if (VLOG_IS_ON(N)) {   \
       VLOG(N) << rest;     \
     }                      \
   } while (0);
-
-#else
-
-#define HEXL_VLOG(N, rest) \
-  {}
-
-#define START_EASYLOGGINGPP(X, Y) \
-  {}
-
-#endif
