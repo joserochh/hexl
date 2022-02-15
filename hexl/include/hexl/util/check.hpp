@@ -10,7 +10,6 @@
 // Create logging/debug macros with no run-time overhead unless HEXL_DEBUG is
 // enabled
 #ifdef HEXL_DEBUG
-#include "hexl/logging/logging.hpp"
 
 #define HEXL_CHECK(cond, expr) \
   {}

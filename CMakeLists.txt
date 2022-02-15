@@ -35,7 +35,6 @@ endif()
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
   set(HEXL_DEBUG ON)
 else()
-  set(HEXL_DEBUG ON)
 endif()
 
 set(CMAKE_CXX_STANDARD 17)
