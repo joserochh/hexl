@@ -78,7 +78,7 @@ endfunction()
 
 # Link HEXL with AddressSanitizer in Debug mode on Mac/Linux
 function(hexl_add_asan_flag target)
-  if(HEXL_DEBUG AND UNIX)
+  if(UNIX)
     target_compile_options(${target} PUBLIC -fsanitize=address)
     target_link_options(${target} PUBLIC -fsanitize=address)
     set(HEXL_ASAN_LINK "-fsanitize=address" PARENT_SCOPE)

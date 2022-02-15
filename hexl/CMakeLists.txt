@@ -58,11 +58,8 @@ configure_file(${HEXL_DEFINES_IN_FILENAME} ${HEXL_DEFINES_FILENAME})
 
 set_target_properties(hexl PROPERTIES POSITION_INDEPENDENT_CODE ON)
 set_target_properties(hexl PROPERTIES VERSION ${HEXL_VERSION})
-if (HEXL_DEBUG)
     set_target_properties(hexl PROPERTIES OUTPUT_NAME "hexl_debug")
-else()
-    set_target_properties(hexl PROPERTIES OUTPUT_NAME "hexl")
-endif()
+
 
 target_include_directories(hexl
     PRIVATE ${HEXL_SRC_ROOT_DIR}                               # Private headers
@@ -86,7 +83,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     )
 
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    # Inlining causes some tests to fail on MSVC with AVX512 in Release mode, HEXL_DEBUG=OFF,
+    # Inlining causes some tests to fail on MSVC with AVX512 in Release mode, =OFF,
     # so we disable it here
     target_compile_options(hexl PRIVATE /Wall /W4 /Ob0
         /wd4127 # warning C4127: conditional expression is constant; C++11 doesn't support if constexpr

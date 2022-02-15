@@ -20,9 +20,7 @@ target_include_directories(bench_hexl PRIVATE
     )
 
 target_link_libraries(bench_hexl PRIVATE hexl benchmark::benchmark Threads::Threads)
-if (HEXL_DEBUG)
     target_link_libraries(bench_hexl PRIVATE easyloggingpp)
-endif()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(bench_hexl PRIVATE -Wall -Wextra -march=native -O3)
