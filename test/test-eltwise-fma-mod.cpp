@@ -15,7 +15,6 @@
 namespace intel {
 namespace hexl {
 
-#ifdef HEXL_DEBUG
 TEST(EltwiseFMAMod, null) {
   std::vector<uint64_t> op1{1, 2, 3, 4, 5, 6, 7, 8};
 
@@ -41,7 +40,6 @@ TEST(EltwiseFMAMod, null) {
   EXPECT_ANY_THROW(EltwiseFMAMod(arg1.data(), arg1.data(), arg2,
                                  big_input.data(), arg1.size(), modulus, 1));
 }
-#endif
 
 TEST(EltwiseFMAMod, small) {
   std::vector<uint64_t> arg1{1, 2, 3, 4, 5, 6, 7, 8};

@@ -18,7 +18,6 @@
 namespace intel {
 namespace hexl {
 
-#ifdef HEXL_DEBUG
 TEST(NTT, bad_input) {
   uint64_t N = 8;
   uint64_t modulus = 769;
@@ -91,7 +90,6 @@ TEST(NTT, bad_input) {
   EXPECT_ANY_THROW(ntt.ComputeInverse(input.data(), input.data(), 1, 123));
   init_inputs();
 }
-#endif
 
 TEST(NTT, Powers) {
   uint64_t modulus = 0xffffffffffc0001ULL;

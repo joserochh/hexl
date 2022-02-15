@@ -14,7 +14,6 @@
 namespace intel {
 namespace hexl {
 
-#ifdef HEXL_DEBUG
 TEST(EltwiseCmpAdd, null) {
   std::vector<uint64_t> op1{1, 2, 3, 4, 5, 6, 7, 8};
 
@@ -26,7 +25,6 @@ TEST(EltwiseCmpAdd, null) {
   EXPECT_ANY_THROW(
       EltwiseCmpAdd(op1.data(), op1.data(), op1.size(), CMPINT::EQ, 1, 0));
 }
-#endif
 
 // Parameters = (input, cmp, bound, diff, expected_output)
 class EltwiseCmpAddTest

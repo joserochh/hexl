@@ -194,7 +194,6 @@ TEST(NumberTheory, InverseMod) {
   input = 1, modulus = 2;
   ASSERT_EQ(1ULL, InverseMod(input, modulus));
 
-#ifdef HEXL_DEBUG
   input = 2, modulus = 2;
   EXPECT_ANY_THROW(InverseMod(input, modulus));
 
@@ -203,7 +202,6 @@ TEST(NumberTheory, InverseMod) {
 
   input = 12345, modulus = 3;
   EXPECT_ANY_THROW(InverseMod(input, modulus));
-#endif
 
   input = 3, modulus = 2;
   ASSERT_EQ(1ULL, InverseMod(input, modulus));
@@ -303,7 +301,6 @@ TEST(NumberTheory, MultiplyModLazy52) {
   ASSERT_EQ(9ULL, MultiplyModLazy<52>(7, y, modulus));
   ASSERT_EQ(2ULL, MultiplyModLazy<52>(6, y, modulus));
 
-#ifdef HEXL_DEBUG
   y = 1152921504605798400ULL;
   EXPECT_ANY_THROW(MultiplyModLazy<52>(1152921504605798401ULL, y, modulus));
   y = 1152921504605798401ULL;
@@ -311,7 +308,6 @@ TEST(NumberTheory, MultiplyModLazy52) {
   EXPECT_ANY_THROW(MultiplyModLazy<52>(1152921504605798401ULL, y, modulus));
   y = 2305843009211596800ULL;
   EXPECT_ANY_THROW(MultiplyModLazy<52>(2305843009211596800ULL, y, modulus));
-#endif
 }
 
 TEST(NumberTheory, MaximumValue) {

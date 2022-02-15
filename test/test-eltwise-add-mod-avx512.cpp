@@ -98,11 +98,7 @@ TEST(EltwiseAddMod, vector_vector_avx512_native_match) {
   for (size_t bits = 1; bits <= 62; ++bits) {
     uint64_t modulus = 1ULL << bits;
 
-#ifdef HEXL_DEBUG
     size_t num_trials = 10;
-#else
-    size_t num_trials = 100;
-#endif
 
     for (size_t trial = 0; trial < num_trials; ++trial) {
       auto op1 = GenerateInsecureUniformRandomValues(length, 0, modulus);
@@ -133,11 +129,7 @@ TEST(EltwiseAddMod, vector_scalar_avx512_native_match) {
   for (size_t bits = 1; bits <= 62; ++bits) {
     uint64_t modulus = 1ULL << bits;
 
-#ifdef HEXL_DEBUG
     size_t num_trials = 10;
-#else
-    size_t num_trials = 10000;
-#endif
 
     for (size_t trial = 0; trial < num_trials; ++trial) {
       auto op1 = GenerateInsecureUniformRandomValues(length, 0, modulus);

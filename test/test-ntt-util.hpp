@@ -28,11 +28,7 @@ class DegreeModulusBoolTest
         GeneratePrimes(1, m_modulus_bits, m_prefer_small_primes, m_N)[0];
     m_ntt = NTT(m_N, m_modulus);
 
-#ifdef HEXL_DEBUG
     m_num_trials = 1;
-#else
-    m_num_trials = 10;
-#endif
   }
 
   void TearDown() override {}

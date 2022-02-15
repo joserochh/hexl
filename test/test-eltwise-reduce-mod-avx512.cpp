@@ -139,11 +139,8 @@ TEST(EltwiseReduceMod, AVX512Big_0_1) {
   for (size_t bits = 50; bits <= 62; ++bits) {
     uint64_t modulus = GeneratePrimes(1, bits, true, length)[0];
 
-#ifdef HEXL_DEBUG
     size_t num_trials = 10;
-#else
-    size_t num_trials = 100;
-#endif
+
     for (size_t trial = 0; trial < num_trials; ++trial) {
       auto op1 = GenerateInsecureUniformRandomValues(length, 0, modulus);
       auto op2 = op1;
@@ -172,11 +169,8 @@ TEST(EltwiseReduceMod, AVX512Big_4_1) {
   for (size_t bits = 50; bits <= 62; ++bits) {
     uint64_t modulus = GeneratePrimes(1, bits, true, length)[0];
 
-#ifdef HEXL_DEBUG
     size_t num_trials = 10;
-#else
-    size_t num_trials = 100;
-#endif
+
     for (size_t trial = 0; trial < num_trials; ++trial) {
       auto op1 = GenerateInsecureUniformRandomValues(length, 0, 4 * modulus);
       auto op2 = op1;
@@ -204,11 +198,8 @@ TEST(EltwiseReduceMod, AVX512Big_4_2) {
   for (size_t bits = 50; bits <= 62; ++bits) {
     uint64_t modulus = GeneratePrimes(1, bits, true, length)[0];
 
-#ifdef HEXL_DEBUG
     size_t num_trials = 10;
-#else
-    size_t num_trials = 100;
-#endif
+
     for (size_t trial = 0; trial < num_trials; ++trial) {
       auto op1 = GenerateInsecureUniformRandomValues(length, 0, 4 * modulus);
       auto op2 = op1;
@@ -236,11 +227,8 @@ TEST(EltwiseReduceMod, AVX512Big_2_1) {
   for (size_t bits = 50; bits <= 62; ++bits) {
     uint64_t modulus = GeneratePrimes(1, bits, true, length)[0];
 
-#ifdef HEXL_DEBUG
     size_t num_trials = 10;
-#else
-    size_t num_trials = 100;
-#endif
+
     for (size_t trial = 0; trial < num_trials; ++trial) {
       auto op1 = GenerateInsecureUniformRandomValues(length, 0, 2 * modulus);
       auto op2 = op1;

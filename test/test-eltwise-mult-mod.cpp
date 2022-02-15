@@ -15,7 +15,6 @@
 namespace intel {
 namespace hexl {
 
-#ifdef HEXL_DEBUG
 TEST(EltwiseMultMod, null) {
   std::vector<uint64_t> op1{1, 2, 3, 4, 5, 6, 7, 8};
   std::vector<uint64_t> op2{1, 2, 3, 4, 5, 6, 7, 8};
@@ -39,7 +38,6 @@ TEST(EltwiseMultMod, null) {
   EXPECT_ANY_THROW(EltwiseMultMod(op1.data(), op1.data(), big_input.data(),
                                   op1.size(), modulus, 1));
 }
-#endif
 
 TEST(EltwiseMultModInPlace, 4) {
   std::vector<uint64_t> op1{2, 4, 3, 2};
@@ -63,7 +61,6 @@ TEST(EltwiseMultModInPlace, 6) {
   CheckEqual(op1, exp_out);
 }
 
-#ifdef HEXL_DEBUG
 TEST(EltwiseMultModInPlace, 8_bounds) {
   std::vector<uint64_t> op1{0, 1, 2, 3, 4, 5, 6, 7};
   std::vector<uint64_t> op2{0, 1, 2, 3, 4, 5, 6, 770};
@@ -73,7 +70,6 @@ TEST(EltwiseMultModInPlace, 8_bounds) {
   EXPECT_ANY_THROW(EltwiseMultMod(op1.data(), op1.data(), op2.data(),
                                   op1.size(), modulus, 1));
 }
-#endif
 
 TEST(EltwiseMultModInPlace, 9) {
   uint64_t modulus = GeneratePrimes(1, 51, true, 1024)[0];
@@ -183,7 +179,6 @@ TEST(EltwiseMultMod, 6) {
   CheckEqual(result, exp_out);
 }
 
-#ifdef HEXL_DEBUG
 TEST(EltwiseMultMod, 8_bounds) {
   std::vector<uint64_t> op1{0, 1, 2, 3, 4, 5, 6, 7};
   std::vector<uint64_t> op2{0, 1, 2, 3, 4, 5, 6, 770};
@@ -194,7 +189,6 @@ TEST(EltwiseMultMod, 8_bounds) {
   EXPECT_ANY_THROW(EltwiseMultMod(result.data(), op1.data(), op2.data(),
                                   op1.size(), modulus, 1));
 }
-#endif
 
 TEST(EltwiseMultMod, 9) {
   uint64_t modulus = GeneratePrimes(1, 51, true, 1024)[0];

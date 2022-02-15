@@ -14,7 +14,6 @@
 namespace intel {
 namespace hexl {
 
-#ifdef HEXL_DEBUG
 TEST(EltwiseSubMod, vector_vector_bad_input) {
   std::vector<uint64_t> op1{1, 2, 3, 4, 5, 6, 7, 8};
   std::vector<uint64_t> op2{1, 3, 5, 7, 9, 2, 4, 6};
@@ -54,7 +53,6 @@ TEST(EltwiseSubMod, vector_scalar_bad_input) {
   EXPECT_ANY_THROW(
       EltwiseSubMod(op1.data(), big_input.data(), op2, op1.size(), modulus));
 }
-#endif
 
 TEST(EltwiseSubMod, vector_vector_native_small) {
   std::vector<uint64_t> op1{1, 2, 3, 4, 5, 6, 7, 8};

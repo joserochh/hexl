@@ -7,7 +7,7 @@
 
 #include "hexl/util/types.hpp"
 
-// Create logging/debug macros with no run-time overhead unless HEXL_DEBUG is
+// Create logging/debug macros with no run-time overhead unless  is
 // enabled
 
 #include "hexl/logging/logging.hpp"

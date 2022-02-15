@@ -14,7 +14,6 @@
 namespace intel {
 namespace hexl {
 
-#ifdef HEXL_DEBUG
 TEST(EltwiseCmpSubMod, null) {
   std::vector<uint64_t> op1{1, 2, 3, 4, 5, 6, 7, 8};
   uint64_t modulus{10};
@@ -30,7 +29,6 @@ TEST(EltwiseCmpSubMod, null) {
   EXPECT_ANY_THROW(EltwiseCmpSubMod(op1.data(), op1.data(), op1.size(), modulus,
                                     CMPINT::EQ, 1, 0));
 }
-#endif
 
 // Parameters = (input, modulus, cmp, bound, diff, expected_output)
 class EltwiseCmpSubModTest

@@ -231,11 +231,8 @@ TEST(EltwiseMultMod, avx512ifma_big) {
         HEXL_VLOG(2,
                   "bits " << bits << " input_mod_factor " << input_mod_factor);
 
-#ifdef HEXL_DEBUG
         size_t num_trials = 1;
-#else
-        size_t num_trials = 10;
-#endif
+
         for (size_t trial = 0; trial < num_trials; ++trial) {
           auto op1 =
               GenerateInsecureUniformRandomValues(length, 0, data_upper_bound);

@@ -152,11 +152,7 @@ TEST(EltwiseFMAMod, AVX512DQ) {
     for (size_t bits = 1; bits <= 60; ++bits) {
       uint64_t modulus = (1ULL << bits) + 7;
 
-#ifdef HEXL_DEBUG
       size_t num_trials = 10;
-#else
-      size_t num_trials = 100;
-#endif
 
       for (size_t trial = 0; trial < num_trials; ++trial) {
         auto arg1 = GenerateInsecureUniformRandomValues(

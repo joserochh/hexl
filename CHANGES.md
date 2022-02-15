@@ -28,7 +28,7 @@
 - Slight performance improvements in element-wise modular multiplication
 - Implement optimized AVX512DQ NTT for moduli < 32 bits
 - Expands public API to include number theory, NTT twiddle factors
-- Remove HEXL_DEBUG and HEXL_EXPORT options. The behavior now is to always export the cmake configuration files, and HEXL_DEBUG is enabled iff the CMAKE_BUILD_TYPE=Debug
+- Remove  and HEXL_EXPORT options. The behavior now is to always export the cmake configuration files, and  is enabled iff the CMAKE_BUILD_TYPE=Debug
 - Added pkgconfig support
 
 ## Version 1.1.1
@@ -46,4 +46,4 @@
 ## Version 1.0.1
 - Removed intel- prefix from headers and library name
 - Fixed CMake variables from 3rd party libraries from leaking
-- Fixed warnings when HEXL_DEBUG=ON
+- Fixed warnings when =ON
