@@ -9,7 +9,7 @@
 
 // Create logging/debug macros with no run-time overhead unless HEXL_DEBUG is
 // enabled
-#ifdef HEXL_DEBUG
+
 #include "hexl/logging/logging.hpp"
 
 /// @brief If input condition is not true, logs the expression and throws an
@@ -33,12 +33,3 @@
   for (size_t hexl_check_idx = 0; hexl_check_idx < n; ++hexl_check_idx) { \
     HEXL_CHECK((arg)[hexl_check_idx] < bound, expr);                      \
   }
-
-#else  // HEXL_DEBUG=OFF
-
-#define HEXL_CHECK(cond, expr) \
-  {}
-#define HEXL_CHECK_BOUNDS(...) \
-  {}
-
-#endif  // HEXL_DEBUG
