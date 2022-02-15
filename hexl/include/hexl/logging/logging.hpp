@@ -23,8 +23,6 @@
 #define ELPP_DISABLE_DEFAULT_CRASH_HANDLING
 #define ELPP_WINSOCK2
 
-#include <easylogging++.h>
-
 #define HEXL_VLOG(N, rest) \
   {}
 
