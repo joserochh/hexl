@@ -103,19 +103,16 @@ install(DIRECTORY ${HEXL_INC_ROOT_DIR}/
 
 if (HEXL_SHARED_LIB)
     target_link_libraries(hexl PRIVATE cpu_features)
-    if (HEXL_DEBUG)
         target_link_libraries(hexl PUBLIC easyloggingpp)
         # Manually add logging include directory
         target_include_directories(hexl
             PUBLIC $<BUILD_INTERFACE:$<TARGET_PROPERTY:easyloggingpp,INCLUDE_DIRECTORIES>>
         )
-    endif()
 else ()
     # For static library, if the dependencies are not found on the system,
     # we manually add the dependencies for Intel HEXL in the exported library.
 
     # Export logging only if in debug mode
-    if (HEXL_DEBUG)
         # Manually add logging include directory
         target_include_directories(hexl
             PUBLIC $<BUILD_INTERFACE:$<TARGET_PROPERTY:easyloggingpp,INCLUDE_DIRECTORIES>>
@@ -125,7 +122,6 @@ else ()
         else()
             hexl_create_archive(hexl easyloggingpp)
         endif()
-    endif()
 
     if (CpuFeatures_FOUND)
       target_link_libraries(hexl PRIVATE cpu_features)
