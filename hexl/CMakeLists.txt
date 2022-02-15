@@ -40,9 +40,8 @@ endif()
 
 set(HEXL_SRC "${NATIVE_SRC};${AVX512_SRC}")
 
-if (HEXL_DEBUG)
     list(APPEND HEXL_SRC logging/logging.cpp)
-endif()
+
 
 if (HEXL_SHARED_LIB)
     add_library(hexl SHARED ${HEXL_SRC})
