@@ -434,6 +434,23 @@ TEST_P(NttNativeTest, ForwardRadix4Random) {
   AssertEqual(input, input_radix4);
 }
 
+TEST_P(NttNativeTest, ForwardRadix2_16) {
+  std::vector<uint64_t> input = {1, 2, 3, 4, 5, 6, 7, 8,
+                                 9, 1, 2, 3, 4, 5, 6, 7};
+
+  auto input_radix2 = input;
+
+  ForwardTransformToBitReverseRadix2(
+      input_radix2.data(), input_radix2.data(), 16, m_modulus,
+      m_ntt.GetRootOfUnityPowers().data(),
+      m_ntt.GetPrecon64RootOfUnityPowers().data(), 2, 1);
+
+  ReferenceForwardTransformToBitReverse(input.data(), 16, m_modulus,
+                                        m_ntt.GetRootOfUnityPowers().data());
+
+  AssertEqual(input, input_radix2);
+}
+
 TEST_P(NttNativeTest, InverseRadix4Random) {
   auto input = GenerateInsecureUniformIntRandomValues(m_N, 0, m_modulus);
   auto input_radix4 = input;

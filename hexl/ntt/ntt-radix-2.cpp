@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include <cstring>
+#include <iostream>
 
 #include "hexl/logging/logging.hpp"
 #include "hexl/ntt/ntt.hpp"
@@ -46,70 +47,148 @@ void ForwardTransformToBitReverseRadix2(
 
     const uint64_t* X_op = operand;
     const uint64_t* Y_op = X_op + t;
-
+    int xc = 0;
+    int yc = xc + t;
     // First pass for out-of-order case
     switch (t) {
       case 8: {
+        std::cout << "J1 = " << j1 << " gap = " << t << " step = 8 "
+                  << std::endl;
+        std::cout << "\t x = " << xc << " y = " << yc << std::endl;
         FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                            twice_modulus);
+        xc++;
+        yc++;
+        std::cout << "\t x = " << xc << " y = " << yc << std::endl;
         FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                            twice_modulus);
+        xc++;
+        yc++;
+        std::cout << "\t x = " << xc << " y = " << yc << std::endl;
         FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                            twice_modulus);
+        xc++;
+        yc++;
+        std::cout << "\t x = " << xc << " y = " << yc << std::endl;
         FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                            twice_modulus);
+        xc++;
+        yc++;
+        std::cout << "\t x = " << xc << " y = " << yc << std::endl;
         FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                            twice_modulus);
+        xc++;
+        yc++;
+        std::cout << "\t x = " << xc << " y = " << yc << std::endl;
         FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                            twice_modulus);
+        xc++;
+        yc++;
+        std::cout << "\t x = " << xc << " y = " << yc << std::endl;
         FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                            twice_modulus);
+        xc++;
+        yc++;
+        std::cout << "\t x = " << xc << " y = " << yc << std::endl;
         FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                            twice_modulus);
+        xc++;
+        yc++;
         break;
       }
       case 4: {
+        std::cout << "J1 = " << j1 << " gap = " << t << " step = 4 "
+                  << std::endl;
+        std::cout << "\t x = " << xc << " y = " << yc << std::endl;
         FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                            twice_modulus);
+        xc++;
+        yc++;
+        std::cout << "\t x = " << xc << " y = " << yc << std::endl;
         FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                            twice_modulus);
+        xc++;
+        yc++;
+        std::cout << "\t x = " << xc << " y = " << yc << std::endl;
         FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                            twice_modulus);
+        xc++;
+        yc++;
+        std::cout << "\t x = " << xc << " y = " << yc << std::endl;
         FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                            twice_modulus);
+        xc++;
+        yc++;
         break;
       }
       case 2: {
+        std::cout << "J1 = " << j1 << " gap = " << t << " step = 2 "
+                  << std::endl;
+        std::cout << "\t x = " << xc << " y = " << yc << std::endl;
         FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                            twice_modulus);
+        xc++;
+        yc++;
+        std::cout << "\t x = " << xc << " y = " << yc << std::endl;
         FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                            twice_modulus);
+        xc++;
+        yc++;
         break;
       }
       case 1: {
+        std::cout << "J1 = " << j1 << " gap = " << t << " step = 1 "
+                  << std::endl;
+        std::cout << "\t x = " << xc << " y = " << yc << std::endl;
         FwdButterflyRadix2(X_r, Y_r, X_op, Y_op, W, W_precon, modulus,
                            twice_modulus);
         break;
       }
       default: {
+        std::cout << "J1 = " << j1 << " gap = " << t << " step = 8 "
+                  << std::endl;
         HEXL_LOOP_UNROLL_8
         for (size_t j = 0; j < t; j += 8) {
+          std::cout << "\t x = " << xc << " y = " << yc << std::endl;
           FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                              twice_modulus);
+          xc++;
+          yc++;
+          std::cout << "\t x = " << xc << " y = " << yc << std::endl;
           FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                              twice_modulus);
+          xc++;
+          yc++;
+          std::cout << "\t x = " << xc << " y = " << yc << std::endl;
           FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                              twice_modulus);
+          xc++;
+          yc++;
+          std::cout << "\t x = " << xc << " y = " << yc << std::endl;
           FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                              twice_modulus);
+          xc++;
+          yc++;
+          std::cout << "\t x = " << xc << " y = " << yc << std::endl;
           FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                              twice_modulus);
+          xc++;
+          yc++;
+          std::cout << "\t x = " << xc << " y = " << yc << std::endl;
           FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                              twice_modulus);
+          xc++;
+          yc++;
+          std::cout << "\t x = " << xc << " y = " << yc << std::endl;
           FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                              twice_modulus);
+          xc++;
+          yc++;
+          std::cout << "\t x = " << xc << " y = " << yc << std::endl;
           FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                              twice_modulus);
+          xc++;
+          yc++;
         }
       }
     }
@@ -125,6 +204,8 @@ void ForwardTransformToBitReverseRadix2(
           if (i != 0) {
             j1 += (t << 1);
           }
+          std::cout << "J1 = " << j1 << " gap = " << t << " step = 8 "
+                    << std::endl;
           const uint64_t W = root_of_unity_powers[m + i];
           const uint64_t W_precon = precon_root_of_unity_powers[m + i];
 
@@ -133,22 +214,49 @@ void ForwardTransformToBitReverseRadix2(
           const uint64_t* X_op = X_r;
           const uint64_t* Y_op = Y_r;
 
+          int xc = j1;
+          int yc = xc + t;
+
+          std::cout << "\t x = " << xc << " y = " << yc << std::endl;
           FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                              twice_modulus);
+          xc++;
+          yc++;
+          std::cout << "\t x = " << xc << " y = " << yc << std::endl;
           FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                              twice_modulus);
+          xc++;
+          yc++;
+          std::cout << "\t x = " << xc << " y = " << yc << std::endl;
           FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                              twice_modulus);
+          xc++;
+          yc++;
+          std::cout << "\t x = " << xc << " y = " << yc << std::endl;
           FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                              twice_modulus);
+          xc++;
+          yc++;
+          std::cout << "\t x = " << xc << " y = " << yc << std::endl;
           FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                              twice_modulus);
+          xc++;
+          yc++;
+          std::cout << "\t x = " << xc << " y = " << yc << std::endl;
           FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                              twice_modulus);
+          xc++;
+          yc++;
+          std::cout << "\t x = " << xc << " y = " << yc << std::endl;
           FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                              twice_modulus);
+          xc++;
+          yc++;
+          std::cout << "\t x = " << xc << " y = " << yc << std::endl;
           FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                              twice_modulus);
+          xc++;
+          yc++;
         }
         break;
       }
@@ -157,6 +265,8 @@ void ForwardTransformToBitReverseRadix2(
           if (i != 0) {
             j1 += (t << 1);
           }
+          std::cout << "J1 = " << j1 << " gap = " << t << " step = 4 "
+                    << std::endl;
           const uint64_t W = root_of_unity_powers[m + i];
           const uint64_t W_precon = precon_root_of_unity_powers[m + i];
 
@@ -165,14 +275,29 @@ void ForwardTransformToBitReverseRadix2(
           const uint64_t* X_op = X_r;
           const uint64_t* Y_op = Y_r;
 
+          int xc = j1;
+          int yc = xc + t;
+
+          std::cout << "\t x = " << xc << " y = " << yc << std::endl;
           FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                              twice_modulus);
+          xc++;
+          yc++;
+          std::cout << "\t x = " << xc << " y = " << yc << std::endl;
           FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                              twice_modulus);
+          xc++;
+          yc++;
+          std::cout << "\t x = " << xc << " y = " << yc << std::endl;
           FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                              twice_modulus);
+          xc++;
+          yc++;
+          std::cout << "\t x = " << xc << " y = " << yc << std::endl;
           FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                              twice_modulus);
+          xc++;
+          yc++;
         }
         break;
       }
@@ -181,6 +306,8 @@ void ForwardTransformToBitReverseRadix2(
           if (i != 0) {
             j1 += (t << 1);
           }
+          std::cout << "J1 = " << j1 << " gap = " << t << " step = 2 "
+                    << std::endl;
           const uint64_t W = root_of_unity_powers[m + i];
           const uint64_t W_precon = precon_root_of_unity_powers[m + i];
 
@@ -189,10 +316,19 @@ void ForwardTransformToBitReverseRadix2(
           const uint64_t* X_op = X_r;
           const uint64_t* Y_op = Y_r;
 
+          int xc = j1;
+          int yc = xc + t;
+
+          std::cout << "\t x = " << xc << " y = " << yc << std::endl;
           FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                              twice_modulus);
+          xc++;
+          yc++;
+          std::cout << "\t x = " << xc << " y = " << yc << std::endl;
           FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                              twice_modulus);
+          xc++;
+          yc++;
         }
         break;
       }
@@ -201,6 +337,8 @@ void ForwardTransformToBitReverseRadix2(
           if (i != 0) {
             j1 += (t << 1);
           }
+          std::cout << "J1 = " << j1 << " gap = " << t << " step = 1 "
+                    << std::endl;
           const uint64_t W = root_of_unity_powers[m + i];
           const uint64_t W_precon = precon_root_of_unity_powers[m + i];
 
@@ -209,8 +347,14 @@ void ForwardTransformToBitReverseRadix2(
           const uint64_t* X_op = X_r;
           const uint64_t* Y_op = Y_r;
 
-          FwdButterflyRadix2(X_r, Y_r, X_op, Y_op, W, W_precon, modulus,
+          int xc = j1;
+          int yc = xc + t;
+
+          std::cout << "\t x = " << xc << " y = " << yc << std::endl;
+          FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon, modulus,
                              twice_modulus);
+          xc++;
+          yc++;
         }
         break;
       }
@@ -219,6 +363,8 @@ void ForwardTransformToBitReverseRadix2(
           if (i != 0) {
             j1 += (t << 1);
           }
+          std::cout << "J1 = " << j1 << " gap = " << t << " step = 8 "
+                    << std::endl;
           const uint64_t W = root_of_unity_powers[m + i];
           const uint64_t W_precon = precon_root_of_unity_powers[m + i];
 
@@ -227,24 +373,51 @@ void ForwardTransformToBitReverseRadix2(
           const uint64_t* X_op = X_r;
           const uint64_t* Y_op = Y_r;
 
+          int xc = j1;
+          int yc = xc + t;
+
           HEXL_LOOP_UNROLL_8
           for (size_t j = 0; j < t; j += 8) {
+            std::cout << "\t x = " << xc << " y = " << yc << std::endl;
             FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon,
                                modulus, twice_modulus);
+            xc++;
+            yc++;
+            std::cout << "\t x = " << xc << " y = " << yc << std::endl;
             FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon,
                                modulus, twice_modulus);
+            xc++;
+            yc++;
+            std::cout << "\t x = " << xc << " y = " << yc << std::endl;
             FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon,
                                modulus, twice_modulus);
+            xc++;
+            yc++;
+            std::cout << "\t x = " << xc << " y = " << yc << std::endl;
             FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon,
                                modulus, twice_modulus);
+            xc++;
+            yc++;
+            std::cout << "\t x = " << xc << " y = " << yc << std::endl;
             FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon,
                                modulus, twice_modulus);
+            xc++;
+            yc++;
+            std::cout << "\t x = " << xc << " y = " << yc << std::endl;
             FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon,
                                modulus, twice_modulus);
+            xc++;
+            yc++;
+            std::cout << "\t x = " << xc << " y = " << yc << std::endl;
             FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon,
                                modulus, twice_modulus);
+            xc++;
+            yc++;
+            std::cout << "\t x = " << xc << " y = " << yc << std::endl;
             FwdButterflyRadix2(X_r++, Y_r++, X_op++, Y_op++, W, W_precon,
                                modulus, twice_modulus);
+            xc++;
+            yc++;
           }
         }
       }

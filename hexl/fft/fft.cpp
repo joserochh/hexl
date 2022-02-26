@@ -3,9 +3,10 @@
 
 #include "hexl/fft/fft.hpp"
 
+#include <iostream>
+
 #include "hexl/fft/fft-native.hpp"
 #include "hexl/logging/logging.hpp"
-
 namespace intel {
 namespace hexl {
 
@@ -47,14 +48,14 @@ void FFT::ComputeComplexRootsOfUnity() {
 
   // PI value used to calculate the roots of unity
   static constexpr double PI_ = 3.1415926535897932384626433832795028842;
-
   // Generate 1/8 of all roots first.
   size_t i = 0;
   for (; i <= roots_degree / 8; i++) {
     roots_of_unity[i] =
-        std::polar<double>(1.0, 2 * PI_ * static_cast<double>(i) /
+        std::polar<double>(1.0, -2 * PI_ * static_cast<double>(i) /
                                     static_cast<double>(roots_degree));
   }
+
   // Complete first 4th
   for (; i <= roots_degree / 4; i++) {
     roots_of_unity[i] = swap_real_imag(roots_of_unity[roots_degree / 4 - i]);
@@ -64,10 +65,12 @@ void FFT::ComputeComplexRootsOfUnity() {
     roots_of_unity[i] = -std::conj(roots_of_unity[roots_degree / 2 - i]);
   }
   // Put in bit reverse and get inv roots
+  std::cout << "Roots " << std::endl;
   for (i = 1; i < m_degree; i++) {
     roots_in_bit_reverse[i] = roots_of_unity[ReverseBits(i, m_degree_bits)];
     inv_roots_in_bit_reverse[i] =
         std::conj(roots_of_unity[ReverseBits(i - 1, m_degree_bits) + 1]);
+    std::cout << roots_in_bit_reverse[i] << std::endl;
   }
   m_complex_roots_of_unity = roots_in_bit_reverse;
   m_inv_complex_roots_of_unity = inv_roots_in_bit_reverse;
