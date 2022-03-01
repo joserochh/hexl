@@ -78,11 +78,11 @@ TEST(FFT, ForwardFFTNative) {
     const uint64_t n = 16;
     FFT fft(n, nullptr);
     AlignedVector64<std::complex<double>> root_powers =
-        fft.GetInvComplexRootsOfUnity();
+        fft.GetComplexRootsOfUnity();
 
     std::vector<std::complex<double>> operand = {
-        {1, 7}, {2, 6}, {3, 5}, {4, 4}, {5, 3}, {6, 2}, {7, 1}, {8, 9},
-        {9, 8}, {1, 7}, {2, 6}, {3, 5}, {4, 4}, {5, 3}, {6, 2}, {7, 1}};
+        8.0,  10.0, 10.0, 8.0,  10.0, 10.0, 10.0, 10.0,
+        10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0};
     std::vector<std::complex<double>> expected = {
         {73, 73},
         {-6.2032150945452065, -4.2416445337387456},
@@ -103,9 +103,15 @@ TEST(FFT, ForwardFFTNative) {
 
     AlignedVector64<std::complex<double>> result(n);
 
-    Inverse_FFT_FromBitReverseRadix2(result.data(), operand.data(),
-                                     root_powers.data(), n);
+    Fwd_FFT(result.data(), operand.data(), root_powers.data(), n);
 
+    for (size_t i = 0; i < n; ++i) {
+      std::cout.precision(17);
+      std::cout << "{" << result[i].real() << "," << result[i].imag() << "},"
+                << std::endl;
+    }
+
+    Inv_FFT(result.data(), result.data(), root_powers.data(), n);
     for (size_t i = 0; i < n; ++i) {
       std::cout.precision(17);
       std::cout << "{" << result[i].real() << "," << result[i].imag() << "},"

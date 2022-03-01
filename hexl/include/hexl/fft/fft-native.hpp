@@ -34,5 +34,13 @@ void Inverse_FFT_FromBitReverseRadix2(
     const std::complex<double>* inv_root_of_unity_powers, const uint64_t n,
     const double* scale = nullptr);
 
+void Inv_FFT(std::complex<double>* result, const std::complex<double>* operand,
+             const std::complex<double>* inv_root_of_unity_powers,
+             const uint64_t n, const double* scale = nullptr);
+
+void Fwd_FFT(std::complex<double>* result, const std::complex<double>* operand,
+             const std::complex<double>* inv_root_of_unity_powers,
+             const uint64_t n, const double* scale = nullptr);
+
 }  // namespace hexl
 }  // namespace intel

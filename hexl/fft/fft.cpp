@@ -52,7 +52,7 @@ void FFT::ComputeComplexRootsOfUnity() {
   size_t i = 0;
   for (; i <= roots_degree / 8; i++) {
     roots_of_unity[i] =
-        std::polar<double>(1.0, -2 * PI_ * static_cast<double>(i) /
+        std::polar<double>(1.0, 2 * PI_ * static_cast<double>(i) /
                                     static_cast<double>(roots_degree));
   }
 
@@ -70,7 +70,8 @@ void FFT::ComputeComplexRootsOfUnity() {
     roots_in_bit_reverse[i] = roots_of_unity[ReverseBits(i, m_degree_bits)];
     inv_roots_in_bit_reverse[i] =
         std::conj(roots_of_unity[ReverseBits(i - 1, m_degree_bits) + 1]);
-    std::cout << roots_in_bit_reverse[i] << std::endl;
+    std::cout << roots_in_bit_reverse[i] << " " << i << " "
+              << ReverseBits(i, m_degree_bits) << std::endl;
   }
   m_complex_roots_of_unity = roots_in_bit_reverse;
   m_inv_complex_roots_of_unity = inv_roots_in_bit_reverse;
